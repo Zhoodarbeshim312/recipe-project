@@ -7,7 +7,7 @@ const Categories = () => {
       <div className="container">
         <div className="">
           <h1 className="text-[58px] mb-[40px]">Категории</h1>
-          <div className="flex flex-wrap gap-[60px]">
+          <div className="flex flex-wrap gap-[70px]">
             <div className="flex flex-col items-center gap-[10px] text-[26px]">
               <Image src={img} alt="img" />
               <p>Рецепты завтраков</p>
