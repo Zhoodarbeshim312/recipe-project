@@ -27,10 +27,16 @@ const Header = () => {
             </Link>
           </nav>
           <div className="flex items-center gap-[20px] ">
-            <button className="text-[white] font-semibold bg-[#714424] py-[5px] px-[20px] rounded-[10px]">
+            <button
+              onClick={() => nav.push("/login")}
+              className="text-[white] font-semibold bg-[#714424] py-[5px] px-[20px] rounded-[10px]"
+            >
               Вход
             </button>
-            <button className="text-[white] font-semibold bg-[#714424] py-[5px] px-[20px] rounded-[10px]">
+            <button
+              onClick={() => nav.push("/register")}
+              className="text-[white] font-semibold bg-[#714424] py-[5px] px-[20px] rounded-[10px]"
+            >
               Регистрация
             </button>
           </div>
