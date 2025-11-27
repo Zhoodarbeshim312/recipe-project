@@ -1,8 +1,11 @@
+"use client";
 import Image from "next/image";
 import imgBack from "@/assets/images/welcomeBack.svg";
 import img from "@/assets/images/welcomeImg.svg";
+import { useRouter } from "next/navigation";
 
 const Welcome = () => {
+  const nav = useRouter();
   return (
     <section className="Welcome py-[40px]">
       <div className="container">
@@ -32,7 +35,10 @@ const Welcome = () => {
               </button>
               <p className="flex gap-1 text-[20px]">
                 у тебя есть аккаунт?
-                <a className="text-[#FF9A31]" href="#">
+                <a
+                  className="text-[#FF9A31]"
+                  onClick={() => nav.push("/login")}
+                >
                   Войти
                 </a>
               </p>
