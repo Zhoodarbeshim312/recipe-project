@@ -46,7 +46,7 @@ model Comment {
   userId    String
   user      User     @relation(fields: [userId], references: [id])
   recipeId  String
-  recipte   Recipe   @relation(fields: [recipeId], references: [id])
+  recipe    Recipe   @relation(fields: [recipeId], references: [id])
   comment   String
   createdAt DateTime @default(now())
 }
