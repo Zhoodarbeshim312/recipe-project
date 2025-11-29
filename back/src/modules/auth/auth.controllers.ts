@@ -3,23 +3,22 @@ import { prisma } from "../../config/prisma";
 import bcrypt from "bcryptjs";
 import { generateToken } from "../../config/token";
 
-interface IUser {
-  id: string;
-  email: string;
-  avatar: string | null;
-  name: string;
-  password: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
 const register = async (req: Request, res: Response) => {
   try {
     const { avatar, name, email, password } = req.body;
 
-    const findUser = await prisma.user.findUnique({ where: { email } });
+    if (!email || !name || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Все поля (name, email, password) обязательны!",
+      });
+    }
+
+    const findUser = await prisma.user.findUnique({
+      where: { email },
+    });
     if (findUser) {
-      return res.status(401).json({
+      return res.status(409).json({
         success: false,
         message: "Такой пользователь уже существует!",
       });
@@ -27,7 +26,7 @@ const register = async (req: Request, res: Response) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user: IUser = await prisma.user.create({
+    const user = await prisma.user.create({
       data: {
         avatar,
         name,
@@ -44,9 +43,10 @@ const register = async (req: Request, res: Response) => {
       userId: user.id,
     });
   } catch (error) {
+    console.error("Register error:", error);
     res.status(500).json({
       success: false,
-      error: `Error in register: ${error}`,
+      message: "Ошибка на сервере при регистрации",
     });
   }
 };
@@ -55,21 +55,19 @@ const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
 
-    const user = await prisma.user.findUnique({
-      where: { email },
-    });
-
-    if (!user) {
-      return res.status(404).json({
+    if (!email || !password) {
+      return res.status(400).json({
         success: false,
-        message: "Пользователь не найден!",
+        message: "Email и пароль обязательны!",
       });
     }
 
-    if (!user.password) {
-      return res.status(400).json({
+    const user = await prisma.user.findUnique({ where: { email } });
+
+    if (!user || !user.password) {
+      return res.status(401).json({
         success: false,
-        message: "У пользователя нет пароля!",
+        message: "Неверный email или пароль!",
       });
     }
 
@@ -77,7 +75,7 @@ const login = async (req: Request, res: Response) => {
     if (!checkPassword) {
       return res.status(401).json({
         success: false,
-        message: "Неверный пароль!",
+        message: "Неверный email или пароль!",
       });
     }
 
@@ -92,9 +90,10 @@ const login = async (req: Request, res: Response) => {
       avatar: user.avatar,
     });
   } catch (error) {
+    console.error("Login error:", error);
     res.status(500).json({
       success: false,
-      error: `Error in login: ${error}`,
+      message: "Ошибка на сервере при входе",
     });
   }
 };
@@ -110,9 +109,14 @@ const resetPassword = async (req: Request, res: Response) => {
       });
     }
 
-    const user = await prisma.user.findUnique({
-      where: { email },
-    });
+    if (newPassword.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: "Пароль должен содержать минимум 6 символов!",
+      });
+    }
+
+    const user = await prisma.user.findUnique({ where: { email } });
 
     if (!user) {
       return res.status(404).json({
@@ -125,9 +129,7 @@ const resetPassword = async (req: Request, res: Response) => {
 
     await prisma.user.update({
       where: { email },
-      data: {
-        password: hashedPassword,
-      },
+      data: { password: hashedPassword },
     });
 
     res.status(200).json({
@@ -135,9 +137,10 @@ const resetPassword = async (req: Request, res: Response) => {
       message: "Пароль успешно обновлён!",
     });
   } catch (error) {
+    console.error("Reset password error:", error);
     res.status(500).json({
       success: false,
-      error: `Error in resetPassword: ${error}`,
+      message: "Ошибка на сервере при обновлении пароля",
     });
   }
 };
