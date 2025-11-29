@@ -5,9 +5,8 @@ import { generateToken } from "../../config/token";
 
 const register = async (req: Request, res: Response) => {
   try {
-    const { avatar, name, email, password } = req.body;
-
-    if (!email || !name || !password) {
+    const { avatar, name, lastName, email, password } = req.body;
+    if (!email || !name || !password || !lastName) {
       return res.status(400).json({
         success: false,
         message: "Все поля (name, email, password) обязательны!",
@@ -30,6 +29,7 @@ const register = async (req: Request, res: Response) => {
       data: {
         avatar,
         name,
+        lastName,
         email,
         password: hashedPassword,
       },

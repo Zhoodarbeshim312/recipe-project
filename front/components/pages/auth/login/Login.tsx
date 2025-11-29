@@ -1,9 +1,54 @@
 "use client";
 import back from "@/assets/images/authBack.svg";
+import axios from "axios";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { MdLogout } from "react-icons/md";
+import { ToastContainer, toast } from "react-toastify";
+
 const Login = () => {
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const nav = useRouter();
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      toast.error("Заполните все поля!", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      return;
+    }
+
+    try {
+      const res = await axios.post("http://localhost:5000/api/auth/login", {
+        email,
+        password,
+      });
+
+      localStorage.setItem("token", res.data.token);
+      nav.push("/");
+      toast.success("Успешный вход!", {
+        position: "top-center",
+        autoClose: 3000,
+        theme: "light",
+      });
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err.response?.data?.message || "Ошибка при входе", {
+        position: "top-center",
+        autoClose: 5000,
+        theme: "light",
+      });
+    }
+  };
+
   return (
     <section
       style={{
@@ -22,22 +67,25 @@ const Login = () => {
             <MdLogout />
           </button>
           <input
-            style={{
-              border: "2px solid #FF9A31",
-            }}
+            id="email"
+            style={{ border: "2px solid #FF9A31" }}
             className="bg-[white] text-[20px] rounded-[10px] px-[20px] w-[380px] h-[50px]"
             type="text"
             placeholder="Email"
+            onChange={(e) => setEmail(e.target.value)}
           />
           <input
-            style={{
-              border: "2px solid #FF9A31",
-            }}
+            id="password"
+            style={{ border: "2px solid #FF9A31" }}
             className="bg-[white] text-[20px] rounded-[10px] px-[20px] w-[380px] h-[50px]"
-            type="text"
-            placeholder="Пороль"
+            type="password"
+            placeholder="Пароль"
+            onChange={(e) => setPassword(e.target.value)}
           />
-          <button className="bg-[#FF9A31] text-[white] rounded-[10px] text-[20px] px-[20px] py-[10px]">
+          <button
+            onClick={handleLogin}
+            className="bg-[#FF9A31] text-[white] rounded-[10px] text-[20px] px-[20px] py-[10px]"
+          >
             Войти
           </button>
           <p className="flex items-center gap-[5px] text-[18px] flex-col">
@@ -51,6 +99,7 @@ const Login = () => {
           </p>
         </div>
       </div>
+      <ToastContainer />
     </section>
   );
 };
