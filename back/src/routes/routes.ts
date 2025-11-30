@@ -1,6 +1,7 @@
 import { Router } from "express";
 import authRoutes from "../modules/auth/auth.routes";
 import recipeRoutes from "../modules/recipe/recipe.routes";
+import userRoutes from "../modules/user/user.routes";
 import cors from "cors";
 
 const globalRouter = Router();
@@ -9,4 +10,5 @@ const corsConfig = {
 };
 globalRouter.use("/auth", cors(corsConfig), authRoutes);
 globalRouter.use("/recipe", cors(corsConfig), recipeRoutes);
+globalRouter.use("/user", cors(corsConfig), userRoutes);
 export default globalRouter;
