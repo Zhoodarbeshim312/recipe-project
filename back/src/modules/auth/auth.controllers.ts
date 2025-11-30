@@ -41,6 +41,10 @@ const register = async (req: Request, res: Response) => {
       success: true,
       token,
       userId: user.id,
+      email: user.email,
+      name: user.name,
+      avatar: user.avatar,
+      lastName: user.lastName,
     });
   } catch (error) {
     console.error("Register error:", error);
@@ -88,6 +92,7 @@ const login = async (req: Request, res: Response) => {
       email: user.email,
       name: user.name,
       avatar: user.avatar,
+      lastName: user.lastName,
     });
   } catch (error) {
     console.error("Login error:", error);
