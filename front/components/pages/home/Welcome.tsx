@@ -30,7 +30,10 @@ const Welcome = () => {
               всегда добавляют щепотку любви.
             </p>
             <div className="flex flex-col items-start">
-              <button className=" bg-[#714424] text-[white] px-[26px] py-[5px] rounded-[10px] text-[25px]">
+              <button
+                onClick={() => nav.push("/register")}
+                className=" bg-[#714424] text-[white] px-[26px] py-[5px] rounded-[10px] text-[25px]"
+              >
                 Регистрация
               </button>
               <p className="flex gap-1 text-[20px]">
