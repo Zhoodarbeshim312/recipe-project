@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 const Header = () => {
   const nav = useRouter();
+  const data = JSON.parse(localStorage.getItem("user") || "{}");
   return (
     <header className="py-[20px]">
       <div className="container">
@@ -27,18 +28,24 @@ const Header = () => {
             </Link>
           </nav>
           <div className="flex items-center gap-[20px] ">
-            <button
-              onClick={() => nav.push("/login")}
-              className="text-[white] font-semibold bg-[#714424] py-[5px] px-[20px] rounded-[10px]"
-            >
-              Вход
-            </button>
-            <button
-              onClick={() => nav.push("/register")}
-              className="text-[white] font-semibold bg-[#714424] py-[5px] px-[20px] rounded-[10px]"
-            >
-              Регистрация
-            </button>
+            {data.token ? (
+              <Image width={50} height={50} src={data.avatar} alt="img" />
+            ) : (
+              <>
+                <button
+                  onClick={() => nav.push("/login")}
+                  className="text-[white] font-semibold bg-[#714424] py-[5px] px-[20px] rounded-[10px]"
+                >
+                  Вход
+                </button>
+                <button
+                  onClick={() => nav.push("/register")}
+                  className="text-[white] font-semibold bg-[#714424] py-[5px] px-[20px] rounded-[10px]"
+                >
+                  Регистрация
+                </button>
+              </>
+            )}
           </div>
         </div>
       </div>
